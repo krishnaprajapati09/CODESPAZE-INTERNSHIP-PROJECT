@@ -18,12 +18,7 @@ You can install the required libraries using pip:
 ```bash
 pip install requests beautifulsoup4
 
-
-
-
-
-
-## Stock Data Downloader and Report Generator
+# Stock Data Downloader and Report Generator
 
 This repository contains a Python program that downloads stock data for specified tickers using the Yahoo Finance API and generates a daily report saved as a CSV file. The program utilizes the `yfinance` library for fetching stock data and `pandas` for data manipulation.
 
@@ -37,3 +32,7 @@ To run this program, you need to have Python installed on your system. Additiona
 
 ```bash
 pip install yfinance pandas
+
+
+
+
