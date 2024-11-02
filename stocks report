@@ -1,0 +1,67 @@
+import yfinance as yf  # Importing the yfinance library to fetch stock data
+import pandas as pd  # Importing pandas for data manipulation
+from datetime import datetime, timedelta  # Importing datetime for date handling
+
+def download_stock_data(tickers, start_date, end_date):
+    """
+    Downloads stock data for the given tickers within the specified date range.
+    
+    :param tickers: List of stock tickers to download data for
+    :param start_date: Start date for the data download
+    :param end_date: End date for the data download
+    :return: Dictionary containing stock data for each ticker
+    """
+    stock_data = {}
+    
+    for ticker in tickers:
+        print(f"Downloading data for {ticker}...")
+        try:
+            # Fetching the stock data
+            data = yf.download(ticker, start=start_date, end=end_date)
+            if data.empty:
+                print(f"No data found for {ticker}.")
+            else:
+                stock_data[ticker] = data
+        except Exception as e:
+            print(f"Error downloading data for {ticker}: {e}")
+    
+    return stock_data
+
+def generate_report(stock_data):
+    """
+    Generates a report from the downloaded stock data and saves it as a CSV file.
+    
+    :param stock_data: Dictionary containing stock data for each ticker
+    """
+    report_data = {}
+    
+    for ticker, data in stock_data.items():
+        # Extracting relevant data for the report
+        report_data[ticker] = {
+            'Open': data['Open'][-1],
+            'Close': data['Close'][-1],
+            'High': data['High'][-1],
+            'Low': data['Low'][-1],
+            'Volume': data['Volume'][-1],
+        }
+    
+    # Creating a DataFrame from the report data
+    report_df = pd.DataFrame(report_data).T
+    report_df.index.name = 'Ticker'
+    
+    # Saving the report to a CSV file
+    report_filename = f"daily_stock_report_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.csv"
+    report_df.to_csv(report_filename)
+    print(f"Report saved as {report_filename}")
+
+if __name__ == "__main__":
+    # List of stock tickers to analyze
+    stock_tickers = ['AAPL', 'GOOGL', 'MSFT']
+    
+    # Setting the date range for the data download
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=1)
+
+    # Downloading stock data and generating the report
+    stock_data = download_stock_data(stock_tickers, start_date.strftime('%Y-%m-%d'), end_date.strftime('%Y-%m-%d'))
+    generate_report(stock_data)
